@@ -15,17 +15,6 @@ import tensorflow as tf
 if tf.__version__ < '1.5.0':
     raise ImportError('Please upgrade your tensorflow installation to v1.5.0 or newer!')
 
-# Needed to show segmentation colormap labels
-############3
-# insted of 'ulils' put the path to the deeplab utils folder
-############
-
-
-model_dir = "/path/to/model/dir"
-_TARBALL_NAME = 'deeplab_model.tar.gz'
-
-
-model = DeepLabModel(model_dir)
 
 LABEL_NAMES = np.asarray([
     'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
@@ -67,3 +56,9 @@ def vis_segmentation(image, seg_map):
     plt.yticks(range(len(unique_labels)), LABEL_NAMES[unique_labels])
     plt.xticks([], [])
     ax.tick_params(width=0)
+
+
+
+
+model = DeepLabModel(model_dir)
+
