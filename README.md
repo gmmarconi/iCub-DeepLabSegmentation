@@ -9,7 +9,7 @@ DeepLab depends on the following libraries:
 
 *   Numpy
 *   Pillow 1.0
-*   tf Slim (which is included in the "tensorflow/models/research/" checkout)
+*   tf Slim ([Installation instructions](https://github.com/tensorflow/models/tree/master/research/slim#Install))
 *   Matplotlib
 *   Tensorflow
 

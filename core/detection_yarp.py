@@ -35,7 +35,18 @@ import yarp
 yarp.Network.init()
 
 class Detector (yarp.RFModule):
-    def __init__(self, in_port_name, out_det_img_port_name, out_det_port_name, rpc_thresh_port_name, out_img_port_name, classes, image_w, image_h, deeplabmodel, prototxt, cpu_mode, gpu_id):
+    def __init__(self,
+                in_port_name,
+                out_det_img_port_name,
+                out_det_port_name
+                out_img_port_name,
+                classes,
+                image_w,
+                image_h,
+                deeplabmodel,
+                cpu_mode,
+                gpu_id):
+
 
         if tf.__version__ < '1.5.0':
             raise ImportError('Please upgrade your tensorflow installation to v1.5.0 or newer!')
@@ -216,7 +227,7 @@ def parse_args():
     parser.add_argument('--thresh_port', dest='rpc_thresh_port_name', help='rpc port name where to set detection threshold',
                         default='/pyfaster:thresh')
 
-    parser.add_argument('--deeplab_model', dest='deeplab_model', help='path to the deeplab model',
+    parser.add_argument('--deeplabmodel', dest='deeplabmodel', help='path to the deeplab model',
                         default='')
     parser.add_argument('--classes_file', dest='classes_file', help='path to the file of all classes with format: cls1,cls2,cls3...',
                         default='app/humanoids_classes.txt')
@@ -235,12 +246,22 @@ if __name__ == '__main__':
     #initialization
     args = parse_args()
 
-    if not os.path.isfile(args.deeplab_model):
-        raise IOError(('Specified model path {:s} not found.\n').format(args.caffemodel))
+    if not os.path.isfile(args.deeplabmodel):
+        raise IOError(('Specified model path {:s} not found.\n').format(args.deeplabmodel))
 
     #raw_input('press any key to continue')
 
-    detector = Detector(args.in_port_name, args.out_det_img_port_name, args.out_det_port_name, args.rpc_thresh_port_name, args.out_img_port_name, None, args.image_width, args.image_height, args.deeplabmodel, args.cpu_mode, args.gpu_id)
+    detector = Detector(args.in_port_name,
+                        args.out_det_img_port_name,
+                        args.out_det_port_name,
+                        args.out_img_port_name,
+                        None,
+                        args.image_width,
+                        args.image_height,
+                        args.deeplabmodel,
+                        args.cpu_mode,
+                        args.gpu_id)
+
 
     #raw_input('Detector initialized. \n press any key to continue')
 
