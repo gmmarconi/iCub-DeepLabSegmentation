@@ -28,7 +28,7 @@ from PIL import Image
 yarp_path = '/home/gmarconi/coding/yarp/yarp/build/lib/python'
 if yarp_path not in sys.path:
     sys.path.insert(0, yarp_path)
-    
+
 import yarp
 
 # Initialise YARP
@@ -145,39 +145,13 @@ def updateModule(self):
         reply.addString(ans)
         self._rpc_thresh_port.reply(reply)
 
-def _sendDetections(self, frame, dets):
-    print 'sending detections...'
 
-    detection = self._out_det_port.prepare()
-    # frame_to_send = self._out_img_port.prepare()
+def composeg(self, image, seg_map):
+    seg_image = get_dataset_colormap.label_to_color_image(
+        seg_map, get_dataset_colormap.get_pascal_name()).astype(np.uint8)
+    blend_img = Image.blend(image, Image.fromarray(seg_image), alpha=0.5)
 
-    detection.clear()
-    # frame_to_send.clear()
-
-    # frame_to_send = frame
-    stamp = yarp.Stamp()
-    for i in range(len(dets)):
-        for j in range(len(dets[i])):
-            d = dets[i][j]
-            cls_id = int(d[5])
-
-            det_list = detection.addList()
-
-            det_list.addDouble(d[0])
-            det_list.addDouble(d[1])
-            det_list.addDouble(d[2])
-            det_list.addDouble(d[3])
-            det_list.addDouble(d[4])
-            det_list.addString(self._classes[cls_id])
-
-    self._out_det_port.setEnvelope(stamp)
-    self._out_img_port.setEnvelope(stamp)
-
-    # self._out_det_port.write(detection)
-    # self._out_img_port.write(frame_to_send)
-    self._out_det_port.write()
-    self._out_img_port.write(frame)
-
+    return blend_img
 
 def cleanup(self):
     print 'cleanup'
@@ -201,9 +175,14 @@ def run(self, cpu_mode, vis=False):
 
         frame = self._in_buf_array
 
-        out_img, segmentation_map = self.model.run(frame)
+        original_img, segmentation_map = self.model.run(frame)
 
-        vis_segmentation(out_img, segmentation_map)
+        comp_img = composeg(original_img, segmentation_map)
+
+        if vis:
+            comp_img = composeg(original_img, segmentation_map)
+            self._out_buf_array[:,:] = comp_img
+            self._out_det_img_port.write(self._out_buf_image)
 
 
 def parse_args():
